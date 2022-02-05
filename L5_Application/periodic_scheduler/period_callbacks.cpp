@@ -31,8 +31,7 @@
 #include <stdint.h>
 #include "io.hpp"
 #include "periodic_callback.h"
-
-
+#include "motor.hpp"
 
 /// This is the stack size used for each of the period tasks (1Hz, 10Hz, 100Hz, and 1000Hz)
 const uint32_t PERIOD_TASKS_STACK_SIZE_BYTES = (512 * 4);
@@ -64,20 +63,59 @@ bool period_reg_tlm(void)
  * The argument 'count' is the number of times each periodic task is called.
  */
 
+
 void period_1Hz(uint32_t count)
 {
     LE.toggle(1);
+//    uint8_t arr[2] = {0,100};
+//    float pwm_val;
+//    static PWM throttle(PWM::pwm2,100);
+//
+//    static int i = 0;
+//
+//    pwm_val = 13.5 + ((20.0-13.5)*arr[i]/100);
+//
+//    throttle.set(pwm_val);
+//    printf("arr[%d] = %d\n",i, arr[i]);
+//
+//    i++;
+//    if(i == 2)
+//    {
+//        i = 0;
+//    }
+
 }
 
 void period_10Hz(uint32_t count)
 {
     LE.toggle(2);
+
+    //static op_motor throttle(PWM::pwm1, 100, motor_type::dc, DC_MIN,DC_MAX);
+    static op_motor steer(PWM::pwm2, 100, motor_type::servo, SERVO_MIN,SERVO_MAX);
+    static uint8_t val = 0;
+    static uint8_t val2 = 0;
+    static bool dir = 1;
+
+    //throttle.set_val(dir,val2++);
+    steer.set_val(dir,val++);
+
+    if(val == 100)
+    {
+        val = 0;
+        dir ^=1;
+    }
+
+    if(val2 == 20)
+    {
+        val2 = 0;
+        dir ^=1;
+    }
+
 }
 
 void period_100Hz(uint32_t count)
 {
     LE.toggle(3);
-    //10ms
 
 }
 
