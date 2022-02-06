@@ -5,7 +5,8 @@
  *      Author: shaur
  */
 #include "motor.hpp"
-
+//#include "io.hpp"
+#include <stdlib.h>
 op_motor::op_motor(PWM::pwmType pwm_pin, unsigned int frequency, motor_type type, float min, float max)
 {
     m_min = min;
@@ -26,11 +27,13 @@ bool op_motor::set_val(bool dir, uint8_t val)
     if(dir)
     {
         pwm_val = m_mid + ((m_max-m_mid)*val/100);
+
         motor->set(pwm_val);
     }
     else
     {
         pwm_val = m_mid - ((m_mid-m_min)*val/100);
+
         motor->set(pwm_val);
     }
 
@@ -51,24 +54,37 @@ void op_motor::set_mid()
      * motor.txt
      * S 15.0 T 15.0
      */
-/*
+
     char data[4] = { 0 };
-    char *filename;
+    char *filename=NULL;
     sprintf(filename,"1:motor_%d.txt",m_type);
 
-    if(FR_NO_FILE != Storage::read(filename, data, sizeof(data)-1, 0))
+    if(FR_NO_FILE == Storage::read(filename, data, sizeof(data)-1, 0))
     {
-        Storage::write(filename, "15.0", sizeof(data)-1, 0);
-        m_mid = 15.0;
+
+
+        if(m_type)
+        {
+            m_mid = DC_MID;
+
+        }
+        else
+        {
+            m_mid = SERVO_MID;
+
+        }
+        char mid_val[4];
+        sprintf(mid_val,"%f",m_mid);
+        Storage::write(filename, mid_val, sizeof(mid_val)-1, 0);
     }
     else
     {
-        // convert data to float
-        // copy to mid
+         m_mid=(float)atof(data);
+
     }
-*/
-    if(m_type == servo) m_mid = SERVO_MID;
-    else if(m_type == dc) m_mid = DC_MID;
+
+   // if(m_type == servo) m_mid = SERVO_MID;
+   // else if(m_type == dc) m_mid = DC_MID;
 }
 
 void calibrate()
