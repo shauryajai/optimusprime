@@ -10,7 +10,6 @@
 
 #include "lpc_pwm.hpp"
 #include <stdint.h>
-//#include "io.hpp"
 #include "storage.hpp"
 #include <stdio.h>
 
@@ -41,6 +40,8 @@ public:
     // get_val()??
 
     void set_mid();
+    float get_mid() {return m_mid;}
+
     void calibrate();
 
     ~op_motor() { printf("Destroyed...\n");}
