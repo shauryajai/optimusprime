@@ -47,6 +47,9 @@ const uint32_t PERIOD_MONITOR_TASK_STACK_SIZE_BYTES = (512 * 3);
 /// Called once before the RTOS is started, this is a good place to initialize things once
 bool period_init(void)
 {
+    steer = new op_motor(PWM::pwm2, 100, motor_type::servo, SERVO_MIN,SERVO_MAX);
+    throttle = new op_motor(PWM::pwm1, 100, motor_type::dc, DC_MIN,DC_MAX);
+
     return true; // Must return true upon success
 }
 
@@ -67,49 +70,30 @@ bool period_reg_tlm(void)
 void period_1Hz(uint32_t count)
 {
     LE.toggle(1);
-//    uint8_t arr[2] = {0,100};
-//    float pwm_val;
-//    static PWM throttle(PWM::pwm2,100);
-//
-//    static int i = 0;
-//
-//    pwm_val = 13.5 + ((20.0-13.5)*arr[i]/100);
-//
-//    throttle.set(pwm_val);
-//    printf("arr[%d] = %d\n",i, arr[i]);
-//
-//    i++;
-//    if(i == 2)
-//    {
-//        i = 0;
-//    }
-
 }
 
 void period_10Hz(uint32_t count)
 {
     LE.toggle(2);
 
-    //static op_motor throttle(PWM::pwm1, 100, motor_type::dc, DC_MIN,DC_MAX);
-    static op_motor steer(PWM::pwm2, 100, motor_type::servo, SERVO_MIN,SERVO_MAX);
-    static uint8_t val = 0;
-    static uint8_t val2 = 0;
-    static bool dir = 1;
-
-    //throttle.set_val(dir,val2++);
-    steer.set_val(dir,val++);
-
-    if(val == 100)
-    {
-        val = 0;
-        dir ^=1;
-    }
-
-    if(val2 == 20)
-    {
-        val2 = 0;
-        dir ^=1;
-    }
+//    static uint8_t val = 0;
+//    static uint8_t val2 = 0;
+//    static bool dir = 1;
+//
+//    throttle->set_val(dir,val2++);
+//    steer->set_val(dir,val++);
+//
+//    if(val == 100)
+//    {
+//        val = 0;
+//        dir ^=1;
+//    }
+//
+//    if(val2 == 20)
+//    {
+//        val2 = 0;
+//        dir ^=1;
+//    }
 
 }
 
