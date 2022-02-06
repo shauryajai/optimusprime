@@ -41,8 +41,12 @@ public:
 
     void set_mid();
     void calibrate();
+
+    ~op_motor() { printf("Destroyed...\n");}
+    op_motor() { printf("Default Construct...\n");}
 };
 
-
+extern op_motor *steer;
+extern op_motor *throttle;
 
 #endif /* MOTOR_HPP_ */

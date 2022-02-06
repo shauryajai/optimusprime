@@ -16,6 +16,7 @@ op_motor::op_motor(PWM::pwmType pwm_pin, unsigned int frequency, motor_type type
 
     set_mid();
     motor->set(m_mid);
+    printf("Constructed..%d\n",type);
 }
 
 bool op_motor::set_val(bool dir, uint8_t val)
@@ -33,7 +34,7 @@ bool op_motor::set_val(bool dir, uint8_t val)
         motor->set(pwm_val);
     }
 
-    printf("Motor_type = %d, dir = %d, val = %d, pwm_val = %f\n",m_type, dir, val, pwm_val);
+    //printf("Motor_type = %d, dir = %d, val = %d, pwm_val = %f\n",m_type, dir, val, pwm_val);
     return 0;
 }
 
@@ -76,4 +77,5 @@ void calibrate()
     // set the mid values in motor.txt
 }
 
-
+op_motor *steer;
+op_motor *throttle;
