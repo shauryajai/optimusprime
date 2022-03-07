@@ -6,6 +6,7 @@
  */
 #include "motor.hpp"
 #include <stdlib.h>
+#include "storage.hpp"
 
 op_motor::op_motor(PWM::pwmType pwm_pin, unsigned int frequency, motor_type type, float min, float max)
 {
@@ -15,7 +16,7 @@ op_motor::op_motor(PWM::pwmType pwm_pin, unsigned int frequency, motor_type type
 
     motor = new PWM(pwm_pin, frequency);
 
-    set_mid();
+    set_mid(); // Read m_mid value from motor_*.txt file
 
     printf("Constructed..%d\n\n",type);
 }
@@ -55,11 +56,11 @@ void op_motor::set_mid()
     Storage::read("1:dummy_read", NULL, 0, 0); // Send dummy read for SD card as it fails on the first attempt
 
     result = Storage::read(fn, (void*)data, sizeof(data)-1, 0);
-    printf(" storage read_result = %d\n",result);
+    printf(" Storage read_result = %d\n",result);
 
     if(FR_NO_FILE == result)
     {
-        if(m_type)
+        if(m_type == dc)
         {
             m_mid = DC_MID;
         }
@@ -70,7 +71,7 @@ void op_motor::set_mid()
 
         sprintf(mid_val,"%f",m_mid);
 
-        printf(" storage write_result = %d\n",Storage::write(fn, (void*)mid_val, sizeof(mid_val), 0));
+        printf(" Storage write_result = %d\n",Storage::write(fn, (void*)mid_val, sizeof(mid_val), 0));
     }
     else if(FR_OK == result)
     {
@@ -90,6 +91,7 @@ void calibrate()
 {
     // increment or decrement the mid val using switches
     // set the mid values in motor.txt
+
 }
 
 op_motor *steer;

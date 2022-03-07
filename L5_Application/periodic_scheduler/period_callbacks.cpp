@@ -31,7 +31,7 @@
 #include <stdint.h>
 #include "io.hpp"
 #include "periodic_callback.h"
-#include "motor.hpp"
+#include <OptimusPrime/op_main.hpp>
 
 /// This is the stack size used for each of the period tasks (1Hz, 10Hz, 100Hz, and 1000Hz)
 const uint32_t PERIOD_TASKS_STACK_SIZE_BYTES = (512 * 4);
@@ -47,9 +47,7 @@ const uint32_t PERIOD_MONITOR_TASK_STACK_SIZE_BYTES = (512 * 3);
 /// Called once before the RTOS is started, this is a good place to initialize things once
 bool period_init(void)
 {
-    steer = new op_motor(PWM::pwm2, 100, motor_type::servo, SERVO_MIN,SERVO_MAX);
-    throttle = new op_motor(PWM::pwm1, 100, motor_type::dc, DC_MIN,DC_MAX);
-
+    op_init();
     return true; // Must return true upon success
 }
 
@@ -70,37 +68,19 @@ bool period_reg_tlm(void)
 void period_1Hz(uint32_t count)
 {
     LE.toggle(1);
+    op_1Hz();
 }
 
 void period_10Hz(uint32_t count)
 {
     LE.toggle(2);
-
-//    static uint8_t val = 0;
-//    static uint8_t val2 = 0;
-//    static bool dir = 1;
-//
-//    throttle->set_val(dir,val2++);
-//    steer->set_val(dir,val++);
-//
-//    if(val == 100)
-//    {
-//        val = 0;
-//        dir ^=1;
-//    }
-//
-//    if(val2 == 20)
-//    {
-//        val2 = 0;
-//        dir ^=1;
-//    }
-
+    op_10Hz();
 }
 
 void period_100Hz(uint32_t count)
 {
     LE.toggle(3);
-
+    op_100Hz();
 }
 
 // 1Khz (1ms) is only run if Periodic Dispatcher was configured to run it at main():
@@ -108,4 +88,5 @@ void period_100Hz(uint32_t count)
 void period_1000Hz(uint32_t count)
 {
     LE.toggle(4);
+    op_1000Hz();
 }

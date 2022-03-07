@@ -10,7 +10,6 @@
 
 #include "lpc_pwm.hpp"
 #include <stdint.h>
-#include "storage.hpp"
 #include <stdio.h>
 
 #define SERVO_MIN 10.0
