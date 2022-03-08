@@ -8,7 +8,7 @@
 #ifndef SETTINGS_HPP_
 #define SETTINGS_HPP_
 
-void settings_handler();
-
+void settings();
+void init_settings();
 
 #endif /* SETTINGS_HPP_ */

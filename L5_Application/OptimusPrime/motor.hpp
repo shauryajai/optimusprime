@@ -11,6 +11,7 @@
 #include "lpc_pwm.hpp"
 #include <stdint.h>
 #include <stdio.h>
+#include "settings.hpp"
 
 #define SERVO_MIN 10.0
 #define SERVO_MID 13.5
@@ -24,30 +25,54 @@ typedef enum {
     dc
 } motor_type;
 
+typedef enum
+{
+    trim_none,
+    trim_low,
+    trim_high,
+} trim_e;
+
 class op_motor
 {
 private:
-    float m_min;
-    float m_max;
-    float m_mid;
-    PWM *motor;
+    float       m_min;
+    float       m_max;
+    float       m_mid;
+    trim_e      m_trim = trim_none;
+    motor_type  m_type;
+    char        m_file[13];
+    PWM        *motor;
+    bool        m_mid_updated = false;
+
+    void set_mid_from_macro();
 
 public:
-    motor_type m_type;
     op_motor(PWM::pwmType pwm_pin, unsigned int frequency, motor_type type, float min, float max);
     bool set_val(bool dir, uint8_t val);
     // get_val()??
 
+    bool is_mid_updated() { return m_mid_updated; }
+    void write_m_mid_to_file();
+
     void set_mid();
-    float get_mid() {return m_mid;}
+
+    void set_trim(trim_e trim) { this->m_trim = trim; }
+
+    float get_mid() { return m_mid; }
 
     void calibrate();
 
-    ~op_motor() { printf("Destroyed...\n");}
+    ~op_motor(); //TODO: We need call this destructor in case remote control override is required
+
     op_motor() { printf("Default Construct...\n");}
 };
 
 extern op_motor *steer;
 extern op_motor *throttle;
+
+void init_motors();
+void calibrate_motors(motor_type m_type, trim_e m_trim);
+void motor_files();
+
 
 #endif /* MOTOR_HPP_ */
